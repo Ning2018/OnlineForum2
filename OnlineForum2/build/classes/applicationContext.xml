@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+		<property name="initialPoolSize" value="${jdbc.initPoolSize}"></property>
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:forum.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="userInfo" class="common.UserInfo" scope="prototype">
+		<property name="pageTopicNumber" value="${pageTopicNumber}" />
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
+		<property name="mappingLocations">
+			<list>
+				<value>classpath:entity/Review.hbm.xml</value>
+				<value>classpath:entity/Topic.hbm.xml</value>
+				<value>classpath:entity/User.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="serviceManager" class="service.ServiceManager">
+		<property name="userService">
+			<ref bean="userService"></ref>
+		</property>
+		<property name="reviewService">
+			<ref bean="reviewService"></ref>
+		</property>
+		<property name="topicService">
+			<ref bean="topicService"></ref>
+		</property>
+	</bean>
+
+	<bean id="userService" class="service.UserServiceImpl">
+		<property name="userDao">
+			<ref bean="userDao"></ref>
+		</property>
+	</bean>
+
+	<bean id="reviewService" class="service.ReviewServiceImpl">
+		<constructor-arg>
+			<ref bean="userDao"></ref>
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="reviewDao"></ref>
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="topicDao"></ref>
+		</constructor-arg>
+	</bean>
+
+	<bean id="topicService" class="service.TopicServiceImpl">
+		<constructor-arg>
+			<ref bean="topicDao"></ref>
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="userDao"></ref>
+		</constructor-arg>
+	</bean>
+
+	<bean id="baseAction" class="action.BaseAction">
+		<property name="serviceManager">
+			<ref bean="serviceManager"></ref>
+		</property>
+	</bean>
+	
+	<bean id="userDao" class="dao.UserDaoImpl">
+	<property name="sessionFactory">
+	<ref bean="sessionFactory"></ref>
+	</property>
+	</bean>
+	<bean id="topicDao" class="dao.TopicDaoImpl">
+	<property name="sessionFactory">
+	<ref bean="sessionFactory"></ref>
+	</property>
+	</bean>
+	<bean id="reviewDao" class="dao.ReviewDaoImpl">
+	<property name="sessionFactory">
+	<ref bean="sessionFactory"></ref>
+	</property>
+	</bean>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="lastNameIsValid" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut expression="execution(* service.*.*(..))"
+			id="txPointcut" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+	</aop:config>
+
+
+</beans>

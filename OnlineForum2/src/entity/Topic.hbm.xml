@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 14, 2018 11:27:35 AM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="entity.Topic" table="TOPIC">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="increment" />
+        </id>
+        <property name="topic" type="java.lang.String">
+            <column name="TOPIC" />
+        </property>
+        <many-to-one name="user" class="entity.User" fetch="join" lazy="false">
+            <column name="USER" />
+        </many-to-one>
+        <many-to-one name="lastReplyUser" class="entity.User" fetch="join" lazy="false">
+            <column name="LASTREPLYUSER" />
+        </many-to-one>
+        <property name="postTopicTime" type="java.util.Date">
+            <column name="POSTTOPICTIME" />
+        </property>
+        <property name="lastReplyTime" type="java.util.Date">
+            <column name="LASTREPLYTIME" />
+        </property>
+        <property name="viewCount" type="int">
+            <column name="VIEWCOUNT" />
+        </property>
+        <property name="replyCount" type="int">
+            <column name="REPLYCOUNT" />
+        </property>
+        <property name="topicPath" type="java.lang.String">
+            <column name="TOPICPATH" />
+        </property>
+    </class>
+</hibernate-mapping>

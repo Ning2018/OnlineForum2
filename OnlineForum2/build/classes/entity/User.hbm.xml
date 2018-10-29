@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 14, 2018 11:27:35 AM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="entity.User" table="USER">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="increment" />
+        </id>
+        <property name="name" type="java.lang.String">
+            <column name="NAME" />
+        </property>
+        <property name="password" type="java.lang.String">
+            <column name="PASSWORD" />
+        </property>
+        <property name="repassword" type="java.lang.String">
+            <column name="REPASSWORD" />
+        </property>
+        <property name="passwordMD5" type="java.lang.String">
+            <column name="PASSWORDMD5" />
+        </property>
+        <property name="xm" type="java.lang.String">
+            <column name="XM" />
+        </property>
+        <property name="email" type="java.lang.String">
+            <column name="EMAIL" />
+        </property>
+        <property name="phone" type="java.lang.String">
+            <column name="PHONE" />
+        </property>
+        <property name="qq" type="java.lang.String">
+            <column name="QQ" />
+        </property>
+        <property name="validationCode" type="java.lang.String">
+            <column name="VALIDATIONCODE" />
+        </property>
+    </class>
+</hibernate-mapping>

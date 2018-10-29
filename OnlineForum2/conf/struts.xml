@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="true" />
+
+	<package name="default" namespace="/" extends="struts-default">
+
+		<interceptors>
+
+			<interceptor name="authorization" class="interceptor.AuthorizationInterceptor" />
+			<interceptor-stack name="sshStack">
+				<interceptor-ref name="paramsPrepareParamsStack">
+					<param name="prepare.alwaysInvokePrepare">false</param>
+				</interceptor-ref>
+				<interceptor-ref name="authorization">
+					<param name="ignoreActions">
+						validate_code,register.*,.*login.*,upload,connector
+					</param>
+				</interceptor-ref>
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+		<default-interceptor-ref name="sshStack"></default-interceptor-ref>
+		<global-results>
+			<result name="success">/WEB-INF/jsp/result_json.jsp</result>
+			<result name="error">/WEB-INF/jsp/result_json.jsp</result>
+			<result name="login" type="redirectAction">
+				login_page
+			</result>
+		</global-results>
+		<action name="register" class="action.RegisterAction">
+			<result name="success">/WEB-INF/jsp/result.jsp</result>
+			<result name="input">/WEB-INF/jsp/register.jsp</result>
+		</action>
+		<action name="login" class="action.LoginAction">
+			<result name="success" type="redirectAction">main</result>
+			<result name="input">/WEB-INF/jsp/login.jsp</result>
+		</action>
+		<action name="post_topic" class="action.PostTopicAction">
+			<result name="success" type="redirectAction">main</result>
+			<result name="error">/WEB-INF/jsp/new_topic.jsp</result>
+		</action>
+		<action name="view_topic" class="action.ViewTopicAction">
+		<result name="success">/WEB-INF/jsp/view_topic.jsp</result>
+		<result name="error" type="redirectAction">main</result>
+		</action>
+		<action name="post_review" class="action.PostReviewAction">
+		<result name="success">/WEB-INF/jsp/post_review.jsp</result>
+		<result name="error" type="redirectAction">main</result>
+		</action>
+		<action name="main" class="action.MainAction">
+			<result name="success">/WEB-INF/jsp/main.jsp</result>
+		</action>
+
+		<action name="validate_code" class="action.ValidationCodeAction" />
+		<action name="*_page">
+			<result>/WEB-INF/jsp/{1}.jsp</result>
+		</action>
+	</package>
+</struts>

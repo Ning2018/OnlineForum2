@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Oct 14, 2018 11:27:35 AM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="entity.Review" table="REVIEW">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="increment" />
+        </id>
+        <property name="topicId" type="int">
+            <column name="TOPICID" />
+        </property>
+        <many-to-one name="reviewUser" class="entity.User" fetch="join" lazy="false">
+            <column name="REVIEWUSER" />
+        </many-to-one>
+        <property name="reviewTime" type="java.util.Date">
+            <column name="REVIEWTIME" />
+        </property>
+    </class>
+</hibernate-mapping>
